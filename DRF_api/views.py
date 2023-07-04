@@ -41,9 +41,9 @@ class UsersView(GenericAPIView):
             with transaction.atomic():
                 serializer.save()
             data = serializer.data
+            return Response(serializer.data)
         except Exception as e:
-            data = {'error': str(e)}
-        return Response(data)
+            return Response({'error': str(e)})
     
 class DeleteView(GenericAPIView):
 
@@ -116,6 +116,7 @@ class ClearDBView(GenericAPIView):
         except:
         # look up some info info here
             return Response(Exception)
+        
 # @csrf_exempt
 # def tasks(request):
 #     '''
