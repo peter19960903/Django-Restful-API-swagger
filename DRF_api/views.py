@@ -28,7 +28,7 @@ class UsersView(GenericAPIView):
         users = self.get_queryset()
         serializer = self.serializer_class(users, many=True)
         data = serializer.data
-        return Response(data)
+        return Response(data, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(
         operation_summary='Add a new user'
@@ -41,9 +41,9 @@ class UsersView(GenericAPIView):
             with transaction.atomic():
                 serializer.save()
             data = serializer.data
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error': str(e)})
+            return Response({'error': str(e)},  status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteView(GenericAPIView):
 
@@ -53,12 +53,15 @@ class DeleteView(GenericAPIView):
     def delete(self, request, user):
         try:
             user = User.objects.filter(pk = user)
-            user.delete()
+            if not user:
+                return Response({"Fail":"Name is not in Database"}, status=status.HTTP_200_OK)
+            else:   
+                user.delete()
 
-            return Response({"result":"user delete"})
+                return Response({"result":"user delete"}, status=status.HTTP_200_OK)
         except:
         # look up some info info here
-            return Response(Exception)
+            return Response(Exception, status=status.HTTP_400_BAD_REQUEST)
         
 class MyFileView(GenericAPIView):
     parser_classes = (MultiPartParser,)
@@ -112,10 +115,10 @@ class ClearDBView(GenericAPIView):
         try:
             user = User.objects.all()
             user.delete()
-            return Response({"Clear DB":"success"})
+            return Response({"Clear DB":"success"}, status=status.HTTP_200_OK)
         except:
         # look up some info info here
-            return Response(Exception)
+            return Response(Exception, status=status.HTTP_400_BAD_REQUEST)
         
 # @csrf_exempt
 # def tasks(request):
