@@ -1,0 +1,7 @@
+version: "3.10"
+services:
+  django:
+    image: drf-backend-docker
+    build:  .
+    ports:
+      - 8000:8000
