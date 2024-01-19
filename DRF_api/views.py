@@ -79,12 +79,12 @@ class MyFileView(GenericAPIView):
             file = file_serializer.validated_data['file']
             reader = pd.read_csv(file)
             for idx, row in reader.iterrows():
-                User_database = User(
-                          name = row["Name"],
-                          age = row["Age"]
-                        )
-                User_database.save()
-            return Response({"status":"Success"}, status=status.HTTP_201_CREATED)
+                user_database = User(
+                    name=row["Name"],
+                    age=row["Age"]
+                )
+                user_database.save()
+            return Response({"status": "Success"}, status=status.HTTP_201_CREATED)
         else:
             raise Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
