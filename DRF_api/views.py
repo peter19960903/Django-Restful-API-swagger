@@ -17,6 +17,9 @@ from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd 
 from drf_yasg.utils import swagger_auto_schema
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UsersView(GenericAPIView):
     queryset = User.objects.all()
@@ -116,9 +119,9 @@ class ClearDBView(GenericAPIView):
             user = User.objects.all()
             user.delete()
             return Response({"Clear DB":"success"}, status=status.HTTP_200_OK)
-        except:
-        # look up some info info here
-            return Response(Exception, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error("error message:%s", e)
+            raise Response(Exception, status=status.HTTP_400_BAD_REQUEST)
         
 # @csrf_exempt
 # def tasks(request):
