@@ -46,7 +46,7 @@ class UsersView(GenericAPIView):
             data = serializer.data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error': str(e)},  status=status.HTTP_400_BAD_REQUEST)
+            raise Response({'error': str(e)},  status=status.HTTP_400_BAD_REQUEST)
     
 class DeleteView(GenericAPIView):
 
@@ -62,9 +62,8 @@ class DeleteView(GenericAPIView):
                 user.delete()
 
                 return Response({"result":"user delete"}, status=status.HTTP_200_OK)
-        except:
-        # look up some info info here
-            return Response(Exception, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            raise Response({'error': str(e)},  status=status.HTTP_400_BAD_REQUEST)
         
 class MyFileView(GenericAPIView):
     parser_classes = (MultiPartParser,)
@@ -87,7 +86,7 @@ class MyFileView(GenericAPIView):
                 User_database.save()
             return Response({"status":"Success"}, status=status.HTTP_201_CREATED)
         else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            raise Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GroupView(GenericAPIView):
     serializer_class = UserSerializer
@@ -122,56 +121,4 @@ class ClearDBView(GenericAPIView):
         except Exception as e:
             logger.error("error message:%s", e)
             raise Response(Exception, status=status.HTTP_400_BAD_REQUEST)
-        
-# @csrf_exempt
-# def tasks(request):
-#     '''
-#     List all task snippets
-#     '''
-#     if(request.method == 'GET'):
-#         # get all the tasks
-#         tasks = Task.objects.all()
-#         # serialize the task data
-#         serializer = TaskSerializer(tasks, many=True)
-#         # return a Json response
-#         return JsonResponse(serializer.data,safe=False)
-#     elif(request.method == 'POST'):
-#         # parse the incoming information
-#         data = JSONParser().parse(request)
-#         # instanciate with the serializer
-#         serializer = TaskSerializer(data=data)
-#         # check if the sent information is okay
-#         if(serializer.is_valid()):
-#             # if okay, save it on the database
-#             serializer.save()
-#             # provide a Json Response with the data that was saved
-#             return JsonResponse(serializer.data, status=201)
-#             # provide a Json Response with the necessary error information
-#         return JsonResponse(serializer.errors, status=400)
-
-# @csrf_exempt
-# def task_detail(request, pk):
-#     try:
-#         # obtain the task with the passed id.
-#         task = Task.objects.get(pk=pk)
-#     except:
-#         # respond with a 404 error message
-#         return HttpResponse(status=404)  
-#     if(request.method == 'PUT'):
-#         # parse the incoming information
-#         data = JSONParser().parse(request)  
-#         # instanciate with the serializer
-#         serializer = TaskSerializer(task, data=data)
-#         # check whether the sent information is okay
-#         if(serializer.is_valid()):  
-#             # if okay, save it on the database
-#             serializer.save() 
-#             # provide a JSON response with the data that was submitted
-#             return JsonResponse(serializer.data, status=201)
-#         # provide a JSON response with the necessary error information
-#         return JsonResponse(serializer.errors, status=400)
-#     elif(request.method == 'DELETE'):
-#         # delete the task
-#         task.delete() 
-#         # return a no content response.
-#         return HttpResponse(status=204) 
+    
